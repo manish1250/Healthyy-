@@ -1,1 +1,117 @@
-https://github.com/YourUsername/HealthyyApp
+// Firebase Auth Activity (for User Login/Register) package com.example.healthyy
+
+import android.content.Intent import android.os.Bundle import android.widget.* import androidx.appcompat.app.AppCompatActivity import com.google.firebase.auth.FirebaseAuth
+
+class AuthActivity : AppCompatActivity() { lateinit var auth: FirebaseAuth
+
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_auth)
+
+    auth = FirebaseAuth.getInstance()
+    val email = "manish@example.com"
+    val password = "123456"
+
+    auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }.addOnFailureListener {
+        auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+    }
+}
+
+}
+
+// Save Weight to Firebase package com.example.healthyy
+
+import android.os.Bundle import androidx.appcompat.app.AppCompatActivity import android.widget.* import com.google.firebase.auth.FirebaseAuth import com.google.firebase.database.FirebaseDatabase
+
+class WeightActivity : AppCompatActivity() { override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState) val layout = LinearLayout(this) layout.orientation = LinearLayout.VERTICAL layout.setPadding(30, 50, 30, 50)
+
+val input = EditText(this)
+    input.hint = "Enter weight in kg"
+    val result = TextView(this)
+    val btn = Button(this).apply { text = "Save Weight" }
+
+    btn.setOnClickListener {
+        val weight = input.text.toString()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "default"
+        val database = FirebaseDatabase.getInstance().reference
+        database.child("users").child(userId).child("weight").setValue(weight)
+        result.text = "Weight saved: $weight kg"
+    }
+
+    layout.addView(input)
+    layout.addView(btn)
+    layout.addView(result)
+    setContentView(layout)
+}
+
+}
+
+// Save Diet, Calories, and Workout to Firebase package com.example.healthyy
+
+import android.os.Bundle import androidx.appcompat.app.AppCompatActivity import android.widget.* import com.google.firebase.auth.FirebaseAuth import com.google.firebase.database.FirebaseDatabase
+
+class DietActivity : AppCompatActivity() { override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState) val layout = LinearLayout(this) layout.orientation = LinearLayout.VERTICAL layout.setPadding(30, 50, 30, 50)
+
+val result = TextView(this)
+    result.text = "Diet Plan: Oats + Banana, Rice + Dal + Veg, Paneer + Roti"
+
+    val saveBtn = Button(this).apply { text = "Save Diet Plan" }
+    saveBtn.setOnClickListener {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "default"
+        val database = FirebaseDatabase.getInstance().reference
+        database.child("users").child(userId).child("diet").setValue("Oats + Banana, Rice + Dal + Veg, Paneer + Roti")
+    }
+
+    layout.addView(result)
+    layout.addView(saveBtn)
+    setContentView(layout)
+}
+
+}
+
+class CalorieActivity : AppCompatActivity() { override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState) val layout = LinearLayout(this) layout.orientation = LinearLayout.VERTICAL layout.setPadding(30, 50, 30, 50)
+
+val result = TextView(this)
+    result.text = "Estimated calories: 1800 kcal"
+
+    val saveBtn = Button(this).apply { text = "Save Calories" }
+    saveBtn.setOnClickListener {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "default"
+        val database = FirebaseDatabase.getInstance().reference
+        database.child("users").child(userId).child("calories").setValue("1800 kcal")
+    }
+
+    layout.addView(result)
+    layout.addView(saveBtn)
+    setContentView(layout)
+}
+
+}
+
+class WorkoutActivity : AppCompatActivity() { override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState) val layout = LinearLayout(this) layout.orientation = LinearLayout.VERTICAL layout.setPadding(30, 50, 30, 50)
+
+val result = TextView(this)
+    result.text = "Workout Plan: Pushups x20, Squats x30, Plank 1 min"
+
+    val saveBtn = Button(this).apply { text = "Save Workout Plan" }
+    saveBtn.setOnClickListener {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "default"
+        val database = FirebaseDatabase.getInstance().reference
+        database.child("users").child(userId).child("workout").setValue("Pushups x20, Squats x30, Plank 1 min")
+    }
+
+    layout.addView(result)
+    layout.addView(saveBtn)
+    setContentView(layout)
+}
+
+}
+
+// Firebase Database Save Example // Save Weight, Diet, Calories, Workout Data // Add Firebase Realtime Database calls in respective activities.
+
